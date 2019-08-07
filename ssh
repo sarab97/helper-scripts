@@ -1,0 +1,5 @@
+MENU="$(rofi -sep "|" -dmenu -i -p 'SSH' <<< "testing 192.168.2.56|repo 192.168.2.21")"
+            case "$MENU" in
+                *192.168.2.56)  urxvt -e ssh -t root@192.168.2.56 "export TERM='xterm-256color'; bash -l";;
+                *192.168.2.21)  urxvt -e ssh -t root@192.168.2.21 "export TERM='xterm-256color'; bash -l";;
+            esac

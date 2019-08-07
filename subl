@@ -1,0 +1,11 @@
+dirlist=(`ls /srv/http`);
+st="";
+echo ${dirlist[*]}
+for filelist in ${dirlist[*]}
+do
+    st=$st$filelist"|";
+done
+
+MENU="$(rofi -sep "|" -dmenu -i -p 'Sublime' <<< ${st})"
+cd /srv/http;
+subl $MENU
