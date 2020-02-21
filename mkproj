@@ -1,0 +1,77 @@
+#!/bin/sh
+
+! getopt --test > /dev/null 
+if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
+    echo 'I’m sorry, `getopt --test` failed in this environment.'
+    exit 1
+fi
+
+OPTIONS=g,l:
+LONGOPTS=nogit,lang:
+
+! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+    exit 2
+fi
+
+eval set -- "$PARSED"
+
+nogit=n lang=-
+
+while true; do
+    case "$1" in
+        -g|--nogit)
+            nogit=y
+            shift
+            ;;
+        -l|--lang)
+            lang="$2"
+            shift 2
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            echo "Programming error"
+            exit 3
+            ;;
+    esac
+done
+
+if [[ $# -ne 1 ]]; then
+    echo "$0: Project Name is required."
+    exit 4
+fi
+
+mkdir ~/proj/$1
+cd ~/proj/$1
+
+case $lang in
+	"php")
+	echo "PHP lang"
+	;;
+	
+    "python")
+	echo "Python lang"
+    python -m venv env
+    echo env > .gitignore
+	;;
+	
+    "node")
+	echo "Node lang"
+    # echo env > .gitignore
+	;;
+	
+    *)
+    echo "$0: Unknown language encountered."
+    exit 4
+	;;
+esac
+
+# echo "nogit: $nogit, lang: $lang, name: $1"
+
+git init
+# echo >> .gitignore
+# touch README.md
+sed "s/{name}/$1/g" ~/bin/Readme.md > ~/proj/$1/Readme.md
